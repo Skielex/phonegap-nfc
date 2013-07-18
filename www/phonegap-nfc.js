@@ -367,8 +367,8 @@ var nfc = {
         cordova.exec(win, fail, "NfcPlugin", "registerNdefFormatable", []);
     },
     
-    write: function (ndefMessage, win, fail) {
-        cordova.exec(win, fail, "NfcPlugin", "writeTag", [ndefMessage]);
+    write: function (ndefMessage, win, fail, makeReadOnly) {
+        cordova.exec(win, fail, "NfcPlugin", "writeTag", [ndefMessage, makeReadOnly]);
     },
 
     share: function (ndefMessage, win, fail) {

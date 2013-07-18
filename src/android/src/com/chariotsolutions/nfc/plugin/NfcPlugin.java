@@ -181,10 +181,11 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
 
         Tag tag = savedIntent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         NdefRecord[] records = Util.jsonToNdefRecords(data.getString(0));
-        writeNdefMessage(new NdefMessage(records), tag, callbackContext);
+        boolean makeRealOnly = data.optBoolean(1);
+		writeNdefMessage(new NdefMessage(records), tag, callbackContext, makeRealOnly);	
     }
 
-    private void writeNdefMessage(final NdefMessage message, final Tag tag, final CallbackContext callbackContext) {
+    private void writeNdefMessage(final NdefMessage message, final Tag tag, final CallbackContext callbackContext, final boolean makeReadOnly) {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
@@ -200,6 +201,9 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
                                         " bytes, message is " + size + " bytes.");
                             } else {
                                 ndef.writeNdefMessage(message);
+								if (makeReadOnly) {
+									ndef.makeReadOnly(); // canMakeReadOnly() returns false for I-CODE tags even though makeReadOnly works fine
+								}
                                 callbackContext.success();
                             }
                         } else {
@@ -210,7 +214,11 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
                         NdefFormatable formatable = NdefFormatable.get(tag);
                         if (formatable != null) {
                             formatable.connect();
-                            formatable.format(message);
+							if (makeReadOnly) {
+								formatable.formatReadOnly(message);
+							} else {
+								formatable.format(message);
+							}
                             callbackContext.success();
                             formatable.close();
                         } else {
