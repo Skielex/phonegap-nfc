@@ -12,7 +12,7 @@ import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
 import android.util.Log;
 import org.apache.cordova.*;
-import org.apache.cordova.api.*;  // for Cordova 2.9
+// import org.apache.cordova.api.*;  // for Cordova 2.9
 // import org.apache.cordova.CallbackContext;
 // import org.apache.cordova.CordovaPlugin;
 // import org.apache.cordova.PluginResult;
@@ -173,7 +173,7 @@ public class NfcPlugin extends CordovaPlugin implements NfcAdapter.OnNdefPushCom
         NdefRecord[] records = {
             new NdefRecord(NdefRecord.TNF_EMPTY, new byte[0], new byte[0], new byte[0])
         };
-        writeNdefMessage(new NdefMessage(records), tag, callbackContext);
+        writeNdefMessage(new NdefMessage(records), tag, callbackContext, false);
     }
     
     private void writeTag(JSONArray data, CallbackContext callbackContext) throws JSONException {
